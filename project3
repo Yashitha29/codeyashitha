@@ -1,0 +1,96 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+from tkinter import Tk,PhotoImage
+
+class ContactBook:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Contact Book")
+        self.master.geometry("800x600")
+        try:
+        #load the background image
+            bg_image=PhotoImage(file="your_background_image.png") 
+        #replace with your image file path
+            bg_label= Label(self.master,image=bg_image)
+            bg_label.place(relwidth=2, relhegitht=2)
+            bg_lable.image=bg_image #keep a reference to the image
+        except Exception as e:
+        #initialize contacts list
+        
+         self.Contacts = []
+
+        self.create_widgets()
+
+    def create_widgets(self):
+        tk.Label(self.master, text="Contact Book", font="Arial 35 bold").pack(pady=20)
+        tk.Button(self.master, text="Add Contact", command=self.add_contact).pack(pady=20)
+        tk.Button(self.master, text="View Contacts", command=self.view_contacts).pack(pady=20)
+        tk.Button(self.master, text="Search Contact", command=self.search_contact).pack(pady=20)
+        tk.Button(self.master, text="Update Contact", command=self.update_contact).pack(pady=20)
+        tk.Button(self.master, text="Delete Contact", command=self.delete_contact).pack(pady=20)
+
+    def add_contact(self):
+        name = self.get_user_input("Enter name:")
+        phone = self.get_user_input("Enter phone number:")
+        email = self.get_user_input("Enter email:")
+        address = self.get_user_input("Enter address:")
+
+        contact = {"Name": name, "Phone": phone, "Email": email, "Address": address}
+        self.contacts.append(contact)
+        messagebox.showinfo("Success", "Contact added successfully!")
+
+    def view_contacts(self):
+        if not self.contacts:
+            messagebox.showinfo("Info", "No contacts available.")
+            return
+
+        contact_list = "\n".join([f"{contact['Name']}: {contact['Phone']}" for contact in self.contacts])
+        messagebox.showinfo("Contacts", contact_list)
+
+    def search_contact(self):
+        search_term = self.get_user_input("Enter name or phone number to search:")
+        results = [contact for contact in self.contacts if
+                   search_term.lower() in contact['Name'].lower() or search_term in contact['Phone']]
+
+        if results:
+            contact_list = "\n".join([f"{contact['Name']}: {contact['Phone']}" for contact in results])
+            messagebox.showinfo("Search Results", contact_list)
+        else:
+            messagebox.showinfo("Search Results", "No contacts found.")
+
+    def update_contact(self):
+        search_term = self.get_user_input("Enter name or phone number to update:")
+        results = [contact for contact in self.contacts if
+                   search_term.lower() in contact['Name'].lower() or search_term in contact['Phone']]
+
+        if results:
+            contact = results[0]
+            updated_name = self.get_user_input(f"Enter updated name (current: {contact['Name']}):")
+            updated_phone = self.get_user_input(f"Enter updated phone number (current: {contact['Phone']}):")
+            updated_email = self.get_user_input(f"Enter updated email (current: {contact['Email']}):")
+            updated_address = self.get_user_input(f"Enter updated address (current: {contact['Address']}):")
+
+            contact.update({"Name": updated_name, "Phone": updated_phone, "Email": updated_email,
+                            "Address": updated_address})
+            messagebox.showinfo("Success", "Contact updated successfully!")
+        else:
+            messagebox.showinfo("Info", "No contacts found for updating.")
+
+    def delete_contact(self):
+        search_term = self.get_user_input("Enter name or phone number to delete:")
+        results = [contact for contact in self.contacts if
+                   search_term.lower() in contact['Name'].lower() or search_term in contact['Phone']]
+
+        if results:
+            contact = results[0]
+            self.contacts.remove(contact)
+            messagebox.showinfo("Success", "Contact deleted successfully!")
+        else:
+            messagebox.showinfo("Info", "No contacts found for deletion.")
+
+    def get_user_input(self, prompt):
+        return simpledialog.askstring("Input", prompt)
+
+root = Tk() 
+contact_book = ContactBook(root)
+root.mainloop()
